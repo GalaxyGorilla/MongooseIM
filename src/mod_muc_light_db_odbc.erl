@@ -502,5 +502,9 @@ update_room_version_transaction({RoomU, RoomS}, Version) ->
 main_host({_, RoomS}) ->
     main_host(RoomS);
 main_host(MUCServer) ->
-    {ok, MainHost} = mongoose_subhosts:get_host(MUCServer),
-    MainHost.
+    case mongoose_subhosts:get_host(MUCServer) of
+        {ok, MainHost} ->
+            MainHost;
+        undefined -> % we probably already have a main host
+            MUCServer
+    end.
