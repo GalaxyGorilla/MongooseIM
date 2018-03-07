@@ -79,10 +79,11 @@ init_per_suite(C) ->
     application:ensure_all_started(shotgun),
     Host = ct:get_config({hosts, mim, domain}),
     MUCLightHost = <<"muclight.", Host/binary>>,
-    C1 = rest_helper:maybe_enable_mam(mam_helper:backend(), Host, C),
+    Backend = mam_helper:backend(),
+    C1 = rest_helper:maybe_enable_mam(Backend, Host, C),
     dynamic_modules:start(Host, mod_muc_light,
                           [{host, binary_to_list(MUCLightHost)},
-                           {rooms_in_rosters, true}]),
+                           {rooms_in_rosters, true}, {backend, Backend}]),
     [{muc_light_host, MUCLightHost} | escalus:init_per_suite(C1)].
 
 end_per_suite(Config) ->
